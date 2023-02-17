@@ -26,9 +26,13 @@ type DatabaseConfig struct {
 	Name     string
 }
 
-// SqliteConfig stores DB credentials.
-type SqliteConfig struct {
-	Name string
+// Neo4jConfig stores DB credentials.
+type Neo4jConfig struct {
+	Host         string
+	Port         string
+	User         string
+	Password     string
+	DataBaseName string
 }
 
 const (

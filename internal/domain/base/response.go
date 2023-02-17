@@ -31,3 +31,10 @@ type ResponseFailure struct {
 	TrackingID string `json:"trackingID" example:"12345678-1234-1234-1234-000000000000"`
 	Message    string `json:"message" example:"error occurred"`
 }
+
+type ResponseOKWithJWT struct {
+	Status     string    `json:"status" example:"OK"`
+	TrackingID string    `json:"trackingID" example:"12345678-1234-1234-1234-000000000000"`
+	GUID       uuid.UUID `json:"GUID" example:"12345678-1234-1234-1234-000000000000"`
+	JWT        string    `json:"JWT"`
+}

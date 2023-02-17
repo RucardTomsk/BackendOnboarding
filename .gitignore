@@ -29,3 +29,5 @@ out/
 
 # Other trash
 .DS_Store
+
+.infra/neo4j

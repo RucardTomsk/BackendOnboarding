@@ -53,6 +53,24 @@ func NewParseEnumError(err error) *ServiceError {
 	}
 }
 
+func NewParseJWTError(err error) *ServiceError {
+	return &ServiceError{
+		Err:     err,
+		Blame:   BlameServer,
+		Code:    http.StatusInternalServerError,
+		Message: "failed to parse jwt-token",
+	}
+}
+
+func NewGenerateJWTError(err error) *ServiceError {
+	return &ServiceError{
+		Err:     err,
+		Blame:   BlameServer,
+		Code:    http.StatusInternalServerError,
+		Message: "failed to generate jwt-token",
+	}
+}
+
 func (e *ServiceError) Error() string {
 	return fmt.Sprintf("[%d] %v (blame: %s)", e.Code, e.Err, e.Blame)
 }

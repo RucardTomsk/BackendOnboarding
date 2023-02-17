@@ -9,9 +9,9 @@ postgres:
 neo4j:
   host: "localhost"
   port: "7687"
-  user: "user-api"
-  password: "user-api"
-  name: "user-api"
+  user: "bot"
+  password: "contrelspawn123"
+  dataBaseName: "roles"
 
 server:
   host: "localhost"
