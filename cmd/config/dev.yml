@@ -1,0 +1,18 @@
+---
+postgres:
+  host: "postgres.freydin.space"
+  port: "55430"
+  user: "admin"
+  password: "contrelspawn123"
+  name: "onboarding"
+
+neo4j:
+  host: "localhost"
+  port: "7687"
+  user: "user-api"
+  password: "user-api"
+  name: "user-api"
+
+server:
+  host: "localhost"
+  port: "8080"
