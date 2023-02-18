@@ -42,18 +42,31 @@ func (h *Router) InitRoutes(
 	router.GET("api/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	baseRouter := router.Group("/api")
 	v1 := baseRouter.Group("/v1")
+	{
+		v1.GET("test", middleware.AuthorizationCheck(userService, *logger), controllerContainer.UserController.Test)
+	}
 	user := v1.Group("user")
 	{
 		user.POST("register", controllerContainer.UserController.RegistrationUser)
 		user.POST("login", controllerContainer.UserController.LoginUser)
 		user.GET("info", middleware.AuthorizationCheck(userService, *logger), controllerContainer.UserController.GetUserInfo)
 		user.GET("all", controllerContainer.UserController.GetUsers)
+		user.POST("about/update", middleware.AuthorizationCheck(userService, *logger), controllerContainer.UserController.UpdateAbout)
+		user.GET("quest", middleware.AuthorizationCheck(userService, *logger), controllerContainer.UserController.GetUserQuest)
 	}
 
 	division := v1.Group("division")
 	{
 		division.POST("create", controllerContainer.DivisionController.CreateDivision)
 		division.GET("all", controllerContainer.DivisionController.GetDivisions)
+		division.POST("addUser", controllerContainer.DivisionController.AddUser)
+	}
+
+	quest := v1.Group("quest")
+	{
+		quest.POST("add", controllerContainer.DivisionController.AddQuest)
+		quest.POST("stage/add", controllerContainer.DivisionController.AddStage)
+		quest.GET("all", controllerContainer.DivisionController.GetAllQuest)
 	}
 
 	roles := v1.Group("roles")

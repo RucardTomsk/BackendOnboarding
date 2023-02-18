@@ -7,9 +7,11 @@ import (
 
 func Migrate(db *gorm.DB) error {
 	return db.AutoMigrate(
+		&entity.Division{},
+		&entity.Quest{},
+		&entity.Stage{},
 		&entity.User{},
 		&entity.About{},
-		&entity.Division{},
 		&entity.Event{},
 	)
 }

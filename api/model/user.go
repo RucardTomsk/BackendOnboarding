@@ -2,6 +2,12 @@ package model
 
 import (
 	"github.com/RucardTomsk/BackendOnboarding/internal/domain/base"
+	"github.com/google/uuid"
+)
+
+const (
+	AdminEmail    = "admin@example.com"
+	AdminPassword = "admin"
 )
 
 type CreateUserRequest struct {
@@ -16,12 +22,29 @@ type LoginUserRequest struct {
 
 type UserInfoResponse struct {
 	base.ResponseOK
-	Email string
+	User UserObject
 }
 
 type UserObject struct {
+	ID    uuid.UUID
 	Email string
 	About AboutObject
+}
+
+type OverQuestObject struct {
+	ID          uuid.UUID
+	Name        string
+	Description string
+	Stages      []StageObject
+}
+type UserQuestObject struct {
+	Division DivisionObject
+	Quests   []OverQuestObject
+}
+
+type AllQuestUserResponse struct {
+	base.ResponseOK
+	DivQuests []UserQuestObject
 }
 
 type GetUsersRequest struct {

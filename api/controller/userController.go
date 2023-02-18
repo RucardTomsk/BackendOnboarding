@@ -15,14 +15,16 @@ import (
 )
 
 type UserController struct {
-	logger  *zap.Logger
-	service *service.UserService
+	logger       *zap.Logger
+	service      *service.UserService
+	questService *service.QuestService
 }
 
-func NewUserController(logger *zap.Logger, service *service.UserService) *UserController {
+func NewUserController(logger *zap.Logger, service *service.UserService, questService *service.QuestService) *UserController {
 	return &UserController{
-		logger:  logger,
-		service: service,
+		logger:       logger,
+		service:      service,
+		questService: questService,
 	}
 }
 
@@ -116,20 +118,14 @@ func (a *UserController) LoginUser(c *gin.Context) {
 	})
 }
 
-// GetUserInfo
-// @Summary      Get User Info
-// @Description  Get User Info
-// @Tags         user
-// @Accept       json
-// @Produce      json
-// @Success      200  {object}  model.UserInfoResponse "OK"
-// @Failure      400  {object}  base.ResponseFailure "Bad request (client fault)"
-// @Failure      500  {object}  base.ResponseFailure "Internal error (server fault)"
-// @Router       /user/info [get]
-func (a *UserController) GetUserInfo(c *gin.Context) {
+func (a *UserController) Test(c *gin.Context) {
 	log := api.EnrichLogger(a.logger, c)
-
-	userIDAny, _ := c.Get(middleware.UserIDKey)
+	userIDAny, ok := c.Get(middleware.UserIDKey)
+	if !ok {
+		log.Warn("not JWT")
+		c.JSON(http.StatusBadRequest, api.GeneralParsingError(middleware.GetTrackingId(c)))
+		return
+	}
 	userID := userIDAny.(string)
 	userGuid, err := uuid.Parse(userID)
 	if err != nil {
@@ -138,7 +134,134 @@ func (a *UserController) GetUserInfo(c *gin.Context) {
 		return
 	}
 
-	email, serviceErr := a.service.GetEmail(userGuid, context.TODO())
+	c.JSON(http.StatusOK, base.ResponseOKWithGUID{
+		Status:     http.StatusText(http.StatusOK),
+		TrackingID: middleware.GetTrackingId(c),
+		GUID:       userGuid,
+	})
+}
+
+// UpdateAbout
+// @Summary      Update About
+// @Description  Update About
+// @Tags         user
+// @Accept       json
+// @Produce      json
+// @Param Authorization header string true "Authentication header"
+// @Param        payload body model.UpdateAbout true "User request"
+// @Success      200  {object}  base.ResponseOK "OK"
+// @Failure      400  {object}  base.ResponseFailure "Bad request (client fault)"
+// @Failure      500  {object}  base.ResponseFailure "Internal error (server fault)"
+// @Router       /user/about/update [post]
+func (a *UserController) UpdateAbout(c *gin.Context) {
+	log := api.EnrichLogger(a.logger, c)
+
+	userIDAny, ok := c.Get(middleware.UserIDKey)
+	if !ok {
+		log.Warn("not JWT")
+		c.JSON(http.StatusBadRequest, api.GeneralParsingError(middleware.GetTrackingId(c)))
+		return
+	}
+	userID := userIDAny.(string)
+	userGuid, err := uuid.Parse(userID)
+	if err != nil {
+		log.Warn("error parsing uuid: " + err.Error())
+		c.JSON(http.StatusBadRequest, api.GeneralParsingError(middleware.GetTrackingId(c)))
+		return
+	}
+
+	var payload model.UpdateAbout
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		log.Warn("error parsing json:" + err.Error())
+		c.JSON(http.StatusBadRequest, api.GeneralParsingError(middleware.GetTrackingId(c)))
+		return
+	}
+
+	if serviceErr := a.service.UpdateAbout(&payload, userGuid, context.TODO()); err != nil {
+		log.Warn("error occurred: " + serviceErr.Error())
+		c.JSON(serviceErr.Code, api.ResponseFromServiceError(*serviceErr, middleware.GetTrackingId(c)))
+		return
+	}
+
+	c.JSON(http.StatusOK, base.ResponseOK{
+		Status:     http.StatusText(http.StatusOK),
+		TrackingID: middleware.GetTrackingId(c),
+	})
+}
+
+// GetUserQuest
+// @Summary      Get User Quest
+// @Description  Get User Quest
+// @Tags         user
+// @Accept       json
+// @Produce      json
+// @Param Authorization header string true "Authentication header"
+// @Success      200  {object}  model.AllQuestUserResponse "OK"
+// @Failure      400  {object}  base.ResponseFailure "Bad request (client fault)"
+// @Failure      500  {object}  base.ResponseFailure "Internal error (server fault)"
+// @Router       /user/quest [get]
+func (a *UserController) GetUserQuest(c *gin.Context) {
+	log := api.EnrichLogger(a.logger, c)
+
+	userIDAny, ok := c.Get(middleware.UserIDKey)
+	if !ok {
+		log.Warn("not JWT")
+		c.JSON(http.StatusBadRequest, api.GeneralParsingError(middleware.GetTrackingId(c)))
+		return
+	}
+	userID := userIDAny.(string)
+	userGuid, err := uuid.Parse(userID)
+	if err != nil {
+		log.Warn("error parsing uuid: " + err.Error())
+		c.JSON(http.StatusBadRequest, api.GeneralParsingError(middleware.GetTrackingId(c)))
+		return
+	}
+
+	divQuest, serviceErr := a.questService.GetAllUserQuest(userGuid)
+	if serviceErr != nil {
+		log.Warn("error occurred: " + serviceErr.Error())
+		c.JSON(serviceErr.Code, api.ResponseFromServiceError(*serviceErr, middleware.GetTrackingId(c)))
+		return
+	}
+
+	c.JSON(http.StatusOK, model.AllQuestUserResponse{
+		ResponseOK: base.ResponseOK{
+			Status:     http.StatusText(http.StatusOK),
+			TrackingID: middleware.GetTrackingId(c),
+		},
+		DivQuests: divQuest,
+	})
+}
+
+// GetUserInfo
+// @Summary      Get User Info
+// @Description  Get User Info
+// @Tags         user
+// @Accept       json
+// @Produce      json
+// @Param Authorization header string true "Authentication header"
+// @Success      200  {object}  model.UserInfoResponse "OK"
+// @Failure      400  {object}  base.ResponseFailure "Bad request (client fault)"
+// @Failure      500  {object}  base.ResponseFailure "Internal error (server fault)"
+// @Router       /user/info [get]
+func (a *UserController) GetUserInfo(c *gin.Context) {
+	log := api.EnrichLogger(a.logger, c)
+
+	userIDAny, ok := c.Get(middleware.UserIDKey)
+	if !ok {
+		log.Warn("not JWT")
+		c.JSON(http.StatusBadRequest, api.GeneralParsingError(middleware.GetTrackingId(c)))
+		return
+	}
+	userID := userIDAny.(string)
+	userGuid, err := uuid.Parse(userID)
+	if err != nil {
+		log.Warn("error parsing uuid: " + err.Error())
+		c.JSON(http.StatusBadRequest, api.GeneralParsingError(middleware.GetTrackingId(c)))
+		return
+	}
+
+	user, serviceErr := a.service.GetInfo(userGuid, context.TODO())
 	if serviceErr != nil {
 		log.Warn("error occurred: " + serviceErr.Error())
 		c.JSON(serviceErr.Code, api.ResponseFromServiceError(*serviceErr, middleware.GetTrackingId(c)))
@@ -150,7 +273,7 @@ func (a *UserController) GetUserInfo(c *gin.Context) {
 			Status:     http.StatusText(http.StatusOK),
 			TrackingID: middleware.GetTrackingId(c),
 		},
-		Email: email,
+		User: *user,
 	})
 }
 

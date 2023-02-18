@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	"crypto/sha1"
+	"errors"
 	"fmt"
 	"github.com/RucardTomsk/BackendOnboarding/api/controller"
+	"github.com/RucardTomsk/BackendOnboarding/api/model"
 	"github.com/RucardTomsk/BackendOnboarding/api/router"
 	"github.com/RucardTomsk/BackendOnboarding/cmd/config"
 	"github.com/RucardTomsk/BackendOnboarding/cmd/docs"
@@ -21,6 +24,11 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+)
+
+const (
+	salt       = "nsfgnstg45s5fbnsfdg"
+	signingKey = "qwerqwerGS#jjsS"
 )
 
 func main() {
@@ -79,22 +87,44 @@ func main() {
 	// init storage
 	userStorage := postgresStorage.NewUserStorage(db)
 	divisionStorage := postgresStorage.NewDivisionStorage(db)
+	aboutStorage := postgresStorage.NewAboutStorage(db)
+	questStorage := postgresStorage.NewQuestStorage(db)
 
 	roleStorage := neo4jRoles.NewRolesStorage(neoDriver, userStorage, divisionStorage)
+
+	// init services
+	divisionService := service.NewDivisionService(
+		divisionStorage,
+		roleStorage,
+		questStorage)
+	userService := service.NewUserService(userStorage, aboutStorage, roleStorage, divisionStorage)
+	questService := service.NewQuestService(userStorage, aboutStorage, roleStorage, divisionStorage, questStorage)
+
+	// create admin
+	_, storageErr := userStorage.RetrieveTo(model.AdminEmail, encryptString(model.AdminPassword), context.TODO())
+	if storageErr != nil {
+		if errors.Is(storageErr, gorm.ErrRecordNotFound) {
+			_, serviceErr := userService.Create(&model.CreateUserRequest{
+				Email:    model.AdminEmail,
+				Password: model.AdminPassword,
+			}, context.TODO())
+			if serviceErr != nil {
+				logger.Fatal(fmt.Sprintf("failed to create admin: %v", serviceErr))
+			}
+		} else {
+			logger.Fatal(fmt.Sprintf("failed to create admin: %v", storageErr))
+		}
+	}
 
 	if err := roleStorage.Migrations(); err != nil {
 		logger.Fatal(fmt.Sprintf("failed to migrate neo4j: %v", err))
 	}
-
-	// init services
-	userService := service.NewUserService(userStorage)
-	divisionService := service.NewDivisionService(divisionStorage)
-
 	// init controllers
 	controllers := controller.NewControllerContainer(
 		logger,
 		userService,
-		divisionService)
+		divisionService,
+		questService)
 
 	// init data processing
 
@@ -125,4 +155,11 @@ func main() {
 	if err := srv.Shutdown(context.Background()); err != nil {
 		logger.Error(fmt.Sprintf("error occured on server shutting down: %s", err.Error()))
 	}
+}
+
+func encryptString(password string) string {
+	hash := sha1.New()
+	hash.Write([]byte(password))
+
+	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }

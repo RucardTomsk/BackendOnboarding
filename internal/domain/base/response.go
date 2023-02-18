@@ -9,6 +9,7 @@ const (
 	BlamePostgres Blame = "Postgres"
 	BlameServer   Blame = "Server"
 	BlameUnknown  Blame = "Unknown"
+	BlameNeo4j    Blame = "Neo4j"
 )
 
 // ResponseOK is a base OK response from server.

@@ -14,9 +14,10 @@ type Container struct {
 func NewControllerContainer(
 	logger *zap.Logger,
 	userService *service.UserService,
-	divisionService *service.DivisionService) *Container {
+	divisionService *service.DivisionService,
+	questService *service.QuestService) *Container {
 	return &Container{
-		UserController:     NewUserController(logger, userService),
+		UserController:     NewUserController(logger, userService, questService),
 		DivisionController: NewDivisionController(logger, divisionService),
 		RolesController:    NewRolesController(logger),
 	}

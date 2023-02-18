@@ -21,7 +21,7 @@ func (s DivisionStorage) Create(division *entity.Division, ctx context.Context) 
 
 func (s DivisionStorage) Retrieve(divisionID uuid.UUID, ctx context.Context) (*entity.Division, error) {
 	var division entity.Division
-	err := s.db.First(&division, divisionID).Error
+	err := s.db.Preload("Quests").First(&division, divisionID).Error
 	return &division, err
 }
 

@@ -34,6 +34,26 @@ func NewPostgresReadError(err error) *ServiceError {
 	}
 }
 
+// NewNeo4jReadError returns ServiceError with general read error message.
+func NewNeo4jReadError(err error) *ServiceError {
+	return &ServiceError{
+		Err:     err,
+		Blame:   BlameNeo4j,
+		Code:    http.StatusInternalServerError,
+		Message: "failed to read data from neo4j",
+	}
+}
+
+// NewNeo4jWriteError returns ServiceError with general write error message.
+func NewNeo4jWriteError(err error) *ServiceError {
+	return &ServiceError{
+		Err:     err,
+		Blame:   BlameNeo4j,
+		Code:    http.StatusInternalServerError,
+		Message: "failed to read data from neo4j",
+	}
+}
+
 // NewNotFoundError returns ServiceError with general not found error message.
 func NewNotFoundError(err error) *ServiceError {
 	return &ServiceError{

@@ -16,6 +16,52 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/division/addUser": {
+            "post": {
+                "description": "Add User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "division"
+                ],
+                "summary": "Add User",
+                "parameters": [
+                    {
+                        "description": "User request",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddUserAndRoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseOK"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
         "/division/all": {
             "get": {
                 "description": "Get Divisions",
@@ -97,6 +143,133 @@ const docTemplate = `{
                 }
             }
         },
+        "/quest/add": {
+            "post": {
+                "description": "Add Quest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quest"
+                ],
+                "summary": "Add Quest",
+                "parameters": [
+                    {
+                        "description": "User request",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateQuestRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseOK"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
+        "/quest/all": {
+            "get": {
+                "description": "Get All Quest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quest"
+                ],
+                "summary": "Get All Quest",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetAllQuestResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
+        "/quest/stage/add": {
+            "post": {
+                "description": "Add Stage",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quest"
+                ],
+                "summary": "Add Stage",
+                "parameters": [
+                    {
+                        "description": "User request",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateStageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseOK"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
         "/roles/all": {
             "get": {
                 "description": "Get Roles",
@@ -115,6 +288,59 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.GetRoles"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/about/update": {
+            "post": {
+                "description": "Update About",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update About",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authentication header",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "User request",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateAbout"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseOK"
                         }
                     },
                     "400": {
@@ -180,6 +406,15 @@ const docTemplate = `{
                     "user"
                 ],
                 "summary": "Get User Info",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authentication header",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -231,6 +466,50 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/base.ResponseOKWithJWT"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/quest": {
+            "get": {
+                "description": "Get User Quest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get User Quest",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authentication header",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AllQuestUserResponse"
                         }
                     },
                     "400": {
@@ -302,13 +581,15 @@ const docTemplate = `{
                 "User",
                 "Postgres",
                 "Server",
-                "Unknown"
+                "Unknown",
+                "Neo4j"
             ],
             "x-enum-varnames": [
                 "BlameUser",
                 "BlamePostgres",
                 "BlameServer",
-                "BlameUnknown"
+                "BlameUnknown",
+                "BlameNeo4j"
             ]
         },
         "base.ResponseFailure": {
@@ -329,6 +610,19 @@ const docTemplate = `{
                 "status": {
                     "type": "string",
                     "example": "Error"
+                },
+                "trackingID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
+                }
+            }
+        },
+        "base.ResponseOK": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "OK"
                 },
                 "trackingID": {
                     "type": "string",
@@ -373,13 +667,10 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.About": {
+        "model.AboutObject": {
             "type": "object",
             "properties": {
                 "contact": {
-                    "type": "string"
-                },
-                "createdAt": {
                     "type": "string"
                 },
                 "description": {
@@ -387,11 +678,16 @@ const docTemplate = `{
                 },
                 "fio": {
                     "type": "string"
-                },
-                "id": {
+                }
+            }
+        },
+        "model.AddUserAndRoleRequest": {
+            "type": "object",
+            "properties": {
+                "divisionID": {
                     "type": "string"
                 },
-                "updatedAt": {
+                "role": {
                     "type": "string"
                 },
                 "userID": {
@@ -399,35 +695,22 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.User": {
+        "model.AllQuestUserResponse": {
             "type": "object",
             "properties": {
-                "about": {
-                    "$ref": "#/definitions/entity.About"
+                "divQuests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserQuestObject"
+                    }
                 },
-                "aboutID": {
-                    "type": "string"
+                "status": {
+                    "type": "string",
+                    "example": "OK"
                 },
-                "createdAt": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "points": {
-                    "type": "integer"
-                },
-                "tgID": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
+                "trackingID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
                 }
             }
         },
@@ -438,6 +721,34 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateQuestRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "divisionID": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateStageRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "questID": {
                     "type": "string"
                 }
             }
@@ -459,8 +770,30 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "model.GetAllQuestResponse": {
+            "type": "object",
+            "properties": {
+                "quests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.QuestObject"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "trackingID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
                 }
             }
         },
@@ -516,7 +849,7 @@ const docTemplate = `{
                 "users": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.User"
+                        "$ref": "#/definitions/model.UserObject"
                     }
                 }
             }
@@ -532,12 +865,77 @@ const docTemplate = `{
                 }
             }
         },
+        "model.OverQuestObject": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "stages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.StageObject"
+                    }
+                }
+            }
+        },
+        "model.QuestObject": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "stages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.StageObject"
+                    }
+                }
+            }
+        },
+        "model.StageObject": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateAbout": {
+            "type": "object",
+            "properties": {
+                "contact": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "fio": {
+                    "type": "string"
+                }
+            }
+        },
         "model.UserInfoResponse": {
             "type": "object",
             "properties": {
-                "email": {
-                    "type": "string"
-                },
                 "status": {
                     "type": "string",
                     "example": "OK"
@@ -545,6 +943,37 @@ const docTemplate = `{
                 "trackingID": {
                     "type": "string",
                     "example": "12345678-1234-1234-1234-000000000000"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.UserObject"
+                }
+            }
+        },
+        "model.UserObject": {
+            "type": "object",
+            "properties": {
+                "about": {
+                    "$ref": "#/definitions/model.AboutObject"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserQuestObject": {
+            "type": "object",
+            "properties": {
+                "division": {
+                    "$ref": "#/definitions/model.DivisionObject"
+                },
+                "quests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.OverQuestObject"
+                    }
                 }
             }
         }

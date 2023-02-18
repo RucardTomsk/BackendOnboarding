@@ -1,6 +1,9 @@
 package model
 
-import "github.com/RucardTomsk/BackendOnboarding/internal/domain/base"
+import (
+	"github.com/RucardTomsk/BackendOnboarding/internal/domain/base"
+	"github.com/google/uuid"
+)
 
 type CreateDivisionRequest struct {
 	Name        string
@@ -8,6 +11,7 @@ type CreateDivisionRequest struct {
 }
 
 type DivisionObject struct {
+	ID          uuid.UUID
 	Name        string
 	Description string
 }
