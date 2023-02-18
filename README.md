@@ -52,3 +52,5 @@
  $ swag init --output cmd/docs/ --parseInternal \
     -d cmd,internal/domain/base,internal/domain/entity,internal/domain/enum,internal/api
 ```
+
+Разработчик: Фрейдин Валерий Игоревич, telegram: Rucard1, email: freydinvalera@gmail.com
