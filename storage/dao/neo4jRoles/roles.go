@@ -10,15 +10,19 @@ import (
 )
 
 type RolesStorage struct {
-	driver      *driver.Neo4jDriver
-	userStorage *postgresStorage.UserStorage
+	driver          *driver.Neo4jDriver
+	userStorage     *postgresStorage.UserStorage
+	divisionStorage *postgresStorage.DivisionStorage
 }
 
-func NewRolesStorage(driver *driver.Neo4jDriver,
-	userStorage *postgresStorage.UserStorage) *RolesStorage {
+func NewRolesStorage(
+	driver *driver.Neo4jDriver,
+	userStorage *postgresStorage.UserStorage,
+	divisionStorage *postgresStorage.DivisionStorage) *RolesStorage {
 	return &RolesStorage{
-		driver:      driver,
-		userStorage: userStorage,
+		driver:          driver,
+		userStorage:     userStorage,
+		divisionStorage: divisionStorage,
 	}
 }
 
@@ -45,6 +49,13 @@ func (s RolesStorage) Migrations() error {
 		}
 	}
 
+	divisions, err := s.divisionStorage.Get()
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
+		}
+	}
+
 	session := s.driver.GetSession()
 	defer session.Close()
 
@@ -60,6 +71,26 @@ func (s RolesStorage) Migrations() error {
 		if !result.Next() {
 			_, err := session.Run("CREATE (u:User {guid: $guid})", map[string]interface{}{
 				"guid": user.ID.String(),
+			})
+
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	for _, division := range divisions {
+		result, err := session.Run("MATCH (d:Division) WHERE d.guid = $guid RETURN d", map[string]interface{}{
+			"guid": division.ID.String(),
+		})
+
+		if err != nil {
+			return err
+		}
+
+		if !result.Next() {
+			_, err := session.Run("CREATE (d:Division {guid: $guid})", map[string]interface{}{
+				"guid": division.ID.String(),
 			})
 
 			if err != nil {

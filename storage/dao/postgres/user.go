@@ -21,13 +21,13 @@ func (s UserStorage) Create(user *entity.User, ctx context.Context) error {
 
 func (s UserStorage) Retrieve(userID uuid.UUID, ctx context.Context) (*entity.User, error) {
 	var user entity.User
-	err := s.db.First(&user, userID).Error
+	err := s.db.Preload("About").First(&user, userID).Error
 	return &user, err
 }
 
 func (s UserStorage) RetrieveTo(Email string, Password string, ctx context.Context) (*entity.User, error) {
 	var user entity.User
-	err := s.db.Model(entity.User{}).
+	err := s.db.Preload("About").Model(entity.User{}).
 		Where("email = ?", Email).
 		Where("password = ?", Password).
 		First(&user).Error
@@ -60,7 +60,7 @@ func (s UserStorage) Delete(userID uuid.UUID, ctx context.Context) error {
 
 func (s UserStorage) Get() ([]entity.User, error) {
 	var users []entity.User
-	tx := s.db.Model(entity.User{}).Find(&users)
+	tx := s.db.Preload("About").Model(entity.User{}).Find(&users)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

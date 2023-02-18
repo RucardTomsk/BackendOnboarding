@@ -1,11 +1,18 @@
 package entity
 
-import "github.com/RucardTomsk/BackendOnboarding/internal/domain/base"
+import (
+	"github.com/RucardTomsk/BackendOnboarding/internal/domain/base"
+	"github.com/google/uuid"
+)
 
 type User struct {
 	base.EntityWithGuidKey
-	UserName   string `json:"userName" gorm:"uniqueIndex"`
 	Password   string `json:"password"`
 	Email      string `json:"email" gorm:"uniqueIndex"`
 	TelegramID string `json:"tgID"`
+
+	Points int `json:"points"`
+
+	AboutID uuid.UUID `json:"aboutID"`
+	About   *About    `json:"about,omitempty" gorm:"-,all"`
 }

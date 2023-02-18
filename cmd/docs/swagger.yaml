@@ -1,4 +1,357 @@
+definitions:
+  base.Blame:
+    enum:
+    - User
+    - Postgres
+    - Server
+    - Unknown
+    type: string
+    x-enum-varnames:
+    - BlameUser
+    - BlamePostgres
+    - BlameServer
+    - BlameUnknown
+  base.ResponseFailure:
+    properties:
+      blame:
+        allOf:
+        - $ref: '#/definitions/base.Blame'
+        example: Guilty System
+      message:
+        example: error occurred
+        type: string
+      status:
+        example: Error
+        type: string
+      trackingID:
+        example: 12345678-1234-1234-1234-000000000000
+        type: string
+    type: object
+  base.ResponseOKWithGUID:
+    properties:
+      GUID:
+        example: 12345678-1234-1234-1234-000000000000
+        type: string
+      status:
+        example: OK
+        type: string
+      trackingID:
+        example: 12345678-1234-1234-1234-000000000000
+        type: string
+    type: object
+  base.ResponseOKWithJWT:
+    properties:
+      GUID:
+        example: 12345678-1234-1234-1234-000000000000
+        type: string
+      JWT:
+        type: string
+      status:
+        example: OK
+        type: string
+      trackingID:
+        example: 12345678-1234-1234-1234-000000000000
+        type: string
+    type: object
+  entity.About:
+    properties:
+      contact:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      fio:
+        type: string
+      id:
+        type: string
+      updatedAt:
+        type: string
+      userID:
+        type: string
+    type: object
+  entity.User:
+    properties:
+      about:
+        $ref: '#/definitions/entity.About'
+      aboutID:
+        type: string
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      password:
+        type: string
+      points:
+        type: integer
+      tgID:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  model.CreateDivisionRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  model.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  model.DivisionObject:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  model.GetDivisions:
+    properties:
+      divisions:
+        items:
+          $ref: '#/definitions/model.DivisionObject'
+        type: array
+      status:
+        example: OK
+        type: string
+      trackingID:
+        example: 12345678-1234-1234-1234-000000000000
+        type: string
+    type: object
+  model.GetRoles:
+    properties:
+      roles:
+        items:
+          type: string
+        type: array
+      status:
+        example: OK
+        type: string
+      trackingID:
+        example: 12345678-1234-1234-1234-000000000000
+        type: string
+    type: object
+  model.GetUsersRequest:
+    properties:
+      status:
+        example: OK
+        type: string
+      trackingID:
+        example: 12345678-1234-1234-1234-000000000000
+        type: string
+      users:
+        items:
+          $ref: '#/definitions/entity.User'
+        type: array
+    type: object
+  model.LoginUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  model.UserInfoResponse:
+    properties:
+      email:
+        type: string
+      status:
+        example: OK
+        type: string
+      trackingID:
+        example: 12345678-1234-1234-1234-000000000000
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /division/all:
+    get:
+      consumes:
+      - application/json
+      description: Get Divisions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetDivisions'
+        "400":
+          description: Bad request (client fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+        "500":
+          description: Internal error (server fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+      summary: Get Divisions
+      tags:
+      - division
+  /division/create:
+    post:
+      consumes:
+      - application/json
+      description: Create Division
+      parameters:
+      - description: User request
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateDivisionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/base.ResponseOKWithGUID'
+        "400":
+          description: Bad request (client fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+        "500":
+          description: Internal error (server fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+      summary: Create Division
+      tags:
+      - division
+  /roles/all:
+    get:
+      consumes:
+      - application/json
+      description: Get Roles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetRoles'
+        "400":
+          description: Bad request (client fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+        "500":
+          description: Internal error (server fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+      summary: Get Roles
+      tags:
+      - roles
+  /user/all:
+    get:
+      consumes:
+      - application/json
+      description: Get Users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetUsersRequest'
+        "400":
+          description: Bad request (client fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+        "500":
+          description: Internal error (server fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+      summary: Get Users
+      tags:
+      - user
+  /user/info:
+    get:
+      consumes:
+      - application/json
+      description: Get User Info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserInfoResponse'
+        "400":
+          description: Bad request (client fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+        "500":
+          description: Internal error (server fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+      summary: Get User Info
+      tags:
+      - user
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login User
+      parameters:
+      - description: User request
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/base.ResponseOKWithJWT'
+        "400":
+          description: Bad request (client fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+        "500":
+          description: Internal error (server fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+      summary: Login User
+      tags:
+      - user
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Registration User
+      parameters:
+      - description: User request
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/base.ResponseOKWithJWT'
+        "400":
+          description: Bad request (client fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+        "500":
+          description: Internal error (server fault)
+          schema:
+            $ref: '#/definitions/base.ResponseFailure'
+      summary: Registration User
+      tags:
+      - user
 swagger: "2.0"

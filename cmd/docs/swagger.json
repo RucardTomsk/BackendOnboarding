@@ -3,5 +3,538 @@
     "info": {
         "contact": {}
     },
-    "paths": {}
+    "paths": {
+        "/division/all": {
+            "get": {
+                "description": "Get Divisions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "division"
+                ],
+                "summary": "Get Divisions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetDivisions"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
+        "/division/create": {
+            "post": {
+                "description": "Create Division",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "division"
+                ],
+                "summary": "Create Division",
+                "parameters": [
+                    {
+                        "description": "User request",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateDivisionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseOKWithGUID"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/all": {
+            "get": {
+                "description": "Get Roles",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Get Roles",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetRoles"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/all": {
+            "get": {
+                "description": "Get Users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get Users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetUsersRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/info": {
+            "get": {
+                "description": "Get User Info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get User Info",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserInfoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "Login User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Login User",
+                "parameters": [
+                    {
+                        "description": "User request",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseOKWithJWT"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/register": {
+            "post": {
+                "description": "Registration User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Registration User",
+                "parameters": [
+                    {
+                        "description": "User request",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseOKWithJWT"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (client fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error (server fault)",
+                        "schema": {
+                            "$ref": "#/definitions/base.ResponseFailure"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "base.Blame": {
+            "type": "string",
+            "enum": [
+                "User",
+                "Postgres",
+                "Server",
+                "Unknown"
+            ],
+            "x-enum-varnames": [
+                "BlameUser",
+                "BlamePostgres",
+                "BlameServer",
+                "BlameUnknown"
+            ]
+        },
+        "base.ResponseFailure": {
+            "type": "object",
+            "properties": {
+                "blame": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/base.Blame"
+                        }
+                    ],
+                    "example": "Guilty System"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "error occurred"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "Error"
+                },
+                "trackingID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
+                }
+            }
+        },
+        "base.ResponseOKWithGUID": {
+            "type": "object",
+            "properties": {
+                "GUID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "trackingID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
+                }
+            }
+        },
+        "base.ResponseOKWithJWT": {
+            "type": "object",
+            "properties": {
+                "GUID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
+                },
+                "JWT": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "trackingID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
+                }
+            }
+        },
+        "entity.About": {
+            "type": "object",
+            "properties": {
+                "contact": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "fio": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "about": {
+                    "$ref": "#/definitions/entity.About"
+                },
+                "aboutID": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "tgID": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateDivisionRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.DivisionObject": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetDivisions": {
+            "type": "object",
+            "properties": {
+                "divisions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.DivisionObject"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "trackingID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
+                }
+            }
+        },
+        "model.GetRoles": {
+            "type": "object",
+            "properties": {
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "trackingID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
+                }
+            }
+        },
+        "model.GetUsersRequest": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "trackingID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.User"
+                    }
+                }
+            }
+        },
+        "model.LoginUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserInfoResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "trackingID": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-000000000000"
+                }
+            }
+        }
+    }
 }

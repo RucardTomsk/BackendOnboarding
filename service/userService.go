@@ -38,9 +38,9 @@ func NewUserService(
 
 func (s *UserService) Create(request *model.CreateUserRequest, ctx context.Context) (*uuid.UUID, *base.ServiceError) {
 	user := entity.User{
-		UserName: request.UserName,
 		Password: encryptString(request.Password),
 		Email:    request.Email,
+		About:    &entity.About{},
 	}
 
 	if err := s.storage.Create(&user, context.TODO()); err != nil {
@@ -48,6 +48,27 @@ func (s *UserService) Create(request *model.CreateUserRequest, ctx context.Conte
 	}
 
 	return &user.ID, nil
+}
+
+func (s *UserService) UpdateAbout(request *model.UpdateAbout, userID uuid.UUID, ctx context.Context) error {
+	user, err := s.storage.Retrieve(userID, context.TODO())
+	if err != nil {
+		return err
+	}
+
+	about := entity.About{
+		Description: request.Description,
+		FIO:         request.FIO,
+		Contact:     request.Contact,
+	}
+
+	user.About = &about
+
+	if err := s.storage.Update(user, context.TODO()); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *UserService) GenerateToken(request *model.GenerateTokenRequest, ctx context.Context) (*model.Token, *base.ServiceError) {
@@ -66,6 +87,24 @@ func (s *UserService) GenerateToken(request *model.GenerateTokenRequest, ctx con
 
 	valueToken, err := token.SignedString([]byte(signingKey))
 	return &model.Token{Value: valueToken}, nil
+}
+
+func (s *UserService) GetEmail(userID uuid.UUID, ctx context.Context) (string, *base.ServiceError) {
+	user, err := s.storage.Retrieve(userID, context.TODO())
+	if err != nil {
+		return "", base.NewPostgresReadError(err)
+	}
+
+	return user.Email, nil
+}
+
+func (s *UserService) Get(ctx context.Context) ([]entity.User, *base.ServiceError) {
+	users, err := s.storage.Get()
+	if err != nil {
+		return nil, base.NewPostgresReadError(err)
+	}
+
+	return users, nil
 }
 
 func (s *UserService) ParseToken(accessToken string) (string, error) {

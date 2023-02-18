@@ -14,5 +14,5 @@ neo4j:
   dataBaseName: "roles"
 
 server:
-  host: "localhost"
-  port: "8081"
+  host: "192.168.1.56"
+  port: "8080"

@@ -13,8 +13,8 @@ const (
 	UserIDKey           = "UserID"
 )
 
-// SetAuthorizationCheck adds authorization check to middleware chain.
-func SetAuthorizationCheck(service *service.UserService, logger zap.Logger) gin.HandlerFunc {
+// AuthorizationCheck adds authorization check to middleware chain.
+func AuthorizationCheck(service *service.UserService, logger zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		header := c.GetHeader(authorizationHeader)

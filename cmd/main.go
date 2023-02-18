@@ -11,7 +11,9 @@ import (
 	"github.com/RucardTomsk/BackendOnboarding/internal/server"
 	"github.com/RucardTomsk/BackendOnboarding/internal/telemetry/log"
 	"github.com/RucardTomsk/BackendOnboarding/service"
+	"github.com/RucardTomsk/BackendOnboarding/storage/dao/neo4jRoles"
 	postgresStorage "github.com/RucardTomsk/BackendOnboarding/storage/dao/postgres"
+	"github.com/RucardTomsk/BackendOnboarding/storage/driver"
 	"github.com/RucardTomsk/BackendOnboarding/storage/migration"
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
@@ -54,6 +56,12 @@ func main() {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
 		cfg.Postgres.Host, cfg.Postgres.User, cfg.Postgres.Password, cfg.Postgres.Name, cfg.Postgres.Port)
 
+	neoDriver, err := driver.NewNeo4jDriver(&cfg.Neo4j)
+
+	if err != nil {
+		logger.Fatal(fmt.Sprintf("can't connect to database: %v", err))
+	}
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -70,14 +78,23 @@ func main() {
 
 	// init storage
 	userStorage := postgresStorage.NewUserStorage(db)
+	divisionStorage := postgresStorage.NewDivisionStorage(db)
+
+	roleStorage := neo4jRoles.NewRolesStorage(neoDriver, userStorage, divisionStorage)
+
+	if err := roleStorage.Migrations(); err != nil {
+		logger.Fatal(fmt.Sprintf("failed to migrate neo4j: %v", err))
+	}
 
 	// init services
 	userService := service.NewUserService(userStorage)
+	divisionService := service.NewDivisionService(divisionStorage)
 
 	// init controllers
 	controllers := controller.NewControllerContainer(
 		logger,
-		userService)
+		userService,
+		divisionService)
 
 	// init data processing
 

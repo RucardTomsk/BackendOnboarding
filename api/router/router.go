@@ -36,7 +36,6 @@ func (h *Router) InitRoutes(
 	router.Use(middleware.SetTracingContext(*logger))
 	router.Use(middleware.SetRequestLogging(*logger))
 	router.Use(middleware.SetOperationName(h.config.Server, *logger))
-	//router.Use(middleware.SetAuthorizationCheck(userService,*logger))
 	router.Use(middleware.SetAccessControl(h.config.Server, *logger))
 	router.Use(cors.New(common.DefaultCorsConfig()))
 
@@ -47,6 +46,19 @@ func (h *Router) InitRoutes(
 	{
 		user.POST("register", controllerContainer.UserController.RegistrationUser)
 		user.POST("login", controllerContainer.UserController.LoginUser)
+		user.GET("info", middleware.AuthorizationCheck(userService, *logger), controllerContainer.UserController.GetUserInfo)
+		user.GET("all", controllerContainer.UserController.GetUsers)
+	}
+
+	division := v1.Group("division")
+	{
+		division.POST("create", controllerContainer.DivisionController.CreateDivision)
+		division.GET("all", controllerContainer.DivisionController.GetDivisions)
+	}
+
+	roles := v1.Group("roles")
+	{
+		roles.GET("all", controllerContainer.RolesController.GetRoles)
 	}
 
 	return router

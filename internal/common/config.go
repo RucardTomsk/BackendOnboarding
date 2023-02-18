@@ -69,7 +69,7 @@ func DefaultCorsConfig() cors.Config {
 	return cors.Config{
 		AllowOrigins:  []string{"*"},
 		AllowMethods:  []string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodOptions},
-		AllowHeaders:  []string{"Origin"},
+		AllowHeaders:  []string{"Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders: []string{"Content-Length"},
 		MaxAge:        12 * time.Hour,
 	}
